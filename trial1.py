@@ -25,6 +25,19 @@ def read_directory(directory):
         result_list.append(text)
     return(result_list)
 
+def read_directory_dic(directory):
+    """
+    Import multiple txt files from a directory in dictionary form
+    """
+    filenames = os.listdir(directory)
+    result_list = {}
+    for txt in filenames:
+        filepath = directory + txt
+        text = tm.read_txt(filepath)
+        f = {txt: text}
+        result_list.update(f)
+    return(result_list)
+
 files = read_directory('c:/Users/Alonso/Desktop/TMProject/COHA/')
 
 ###
