@@ -44,3 +44,12 @@ for text in filenames:
     text = text[1:5]
     year.append(text)
 df['year'] = year
+
+# clean text (also without commas or dots)
+textClean = []
+for text in df['text']:
+    text = re.sub(r'[^a-zA-Z]',' ',text)
+    text = re.sub(r' +',' ', text)
+    text = text.rstrip()
+    textClean.append(text)
+df['clean_text'] = textClean
