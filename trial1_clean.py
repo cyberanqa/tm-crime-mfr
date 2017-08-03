@@ -28,7 +28,7 @@ df = pd.DataFrame()
 df['filename'] = filenames
 df['text'] = text_list
 
-# adding a genre column
+# adding a genre column (fic: fiction, mag: magazines, news: news, nf: non-fiction)
 genre = []
 for text in filenames:
     text = re.sub(r'[^a-zA-Z]','',text)
@@ -53,7 +53,7 @@ for text in df['text']:
     text = text.rstrip()
     textClean.append(text)
 df['clean_text'] = textClean
-
+    
 """
 - First try for topic analysis
 """
@@ -123,25 +123,53 @@ def slice_text(texts, n = 100, cut_off = True):
 token_sliced = [slice_text(i, 150) for i in token_nostop]
 df['token_sliced'] = token_sliced
 
+# crime dictionary
 
-"""
-¡¡¡¡¡¡¡¡IMPORTANT!!!!!!
-- IM NOT CAPTURING THE TEMPORAL RESOLUTION FURTHER THIS POINT, NEED TO SOLVE THIS
-"""
+with io.open('c:/Users/Alonso/Desktop/TMProject/crime_dic.txt', 'r', encoding = 'utf-8') as f:
+    cri_dic = f.read()
 
-# variable just for crime
+cri_dic_clean = re.sub(r'[^a-zA-Z]',' ',cri_dic)
+cri_dic_clean = re.sub(r' +',' ', cri_dic_clean)
+cri_dic_clean = cri_dic_clean.rstrip()
+
+token_cri_dic = tokenize(cri_dic_clean, True)
+
+# variable for the crime dictionary
+multillist = list(df['token_sliced'])
 cri = []
-
-for text in token_sliced:
-    for fragment in text:
-        if 'crime' in fragment:
-            cri.append(fragment)
+for text in multillist:
+    text_res = []
+    for slice in text:
+        idx = 0
+        for w in slice:
+            if w in token_cri_dic:
+                idx += 1
+        if idx > 0:
+            text_res.append(slice)
+    cri.append(text_res)
             
+df['cri'] = cri
+      
+# 
+var = cri
+var = [].join(cri)
+
+for i in range(0, len(cri)):
+    var = []
+    for n in range(0, len(cri[i])):
+        var = var + cri[i][n]
+
+var = []
+for l in cri:
+    var.append([item for sublist in l for item in sublist])
+        
+var[0]
+flat_list = [item for sublist in var[0] for item in sublist]
 # topic modelling
 ### let the topic modelling begin
 from gensim import corpora, models
 
-dictionary = corpora.Dictionary(cri)
+dictionary = corpora.Dictionary(var)
 
 ###
 # some of this dont do shit
@@ -152,16 +180,53 @@ print(dictionary.values())
 print(dictionary.dfs) 
 ###
 
-slic_bow = [dictionary.doc2bow(slic) for slic in cri]
+slic_bow = [dictionary.doc2bow(slic) for slic in var]
 
 
 # train the model
-mdl = models.LdaModel(slic_bow, id2word = dictionary, num_topics = 10, random_state = 1234)
+mdl = models.LdaModel(slic_bow, id2word = dictionary, num_topics = 5, random_state = 1234)
 
 
 # explore the model
 # print topics as word distributions
-for i in range(10):
+for i in range(5):
     print('topic', i)
     print([t[0] for t in mdl.show_topic(i, 10)])
     print('-----')
+
+
+"""
+vocab = dictionary.values()
+query = []
+for fragment in token_sliced:
+    tmp = [w for w in token_sliced if w in vocab]
+    query.append(tmp)
+
+query = [w for w in token_sliced if w in vocab] 
+
+
+print(query)
+query = dictionary.doc2bow(query)
+print(query)
+mdl[query]
+"""
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
