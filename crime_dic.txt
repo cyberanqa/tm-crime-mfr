@@ -1,0 +1,10 @@
+crime, offense, transgression, misdemeanor, felony, violation, outrage,
+wickedness, immorality, misdeed, infringement, wrongdoing, depravity, abomination, misconduct, corruption, vice, villainy,
+iniquity, delinquency, negligence, wrong, trespass, malefaction,
+malfeasance, tort, dereliction, lawlessness, criminality, scandal,
+infraction, atrocity, evil, sin,
+offence, misdemeanour, injustice,
+lawbreaking, breach, peaccadillo, malpractice, neglect, illegality,
+abuse, robbery, robbery, rape, mugging, theft, thieving, burglary, stealing, fraud,
+embezzlement, smuggling, trafficking, vandalism, blackmail,
+larceny, murder, manslaughter, homicide, genocide, kidnapping
