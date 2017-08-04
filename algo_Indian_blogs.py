@@ -60,7 +60,6 @@ for fragment in token_text:
     token_nostop.append(no_sw)
 df['token_nostop'] = token_nostop
    
-
 ''' CRIME DICT '''
 import io
 cri_dic = io.open('C:\Users\Ray\Desktop\TMProject\crime_dic.txt', 'r', encoding = 'utf-8').read()
@@ -68,8 +67,6 @@ cri_dic_clean = re.sub(r'[^a-zA-Z]',' ',cri_dic)
 cri_dic_clean = re.sub(r' +',' ', cri_dic_clean)
 cri_dic_clean = cri_dic_clean.rstrip()
 token_cri_dic = tokenize(cri_dic_clean, True)
-
-# filter(r.match, list)
 
 # filter the texts by crime dictionary
 crime = []
@@ -99,7 +96,6 @@ for l in cri:
 var[0]
 flat_list = [item for sublist in var[0] for item in sublist]
     
-
 ''' TOPIC MODELLING - LDA'''
 
 from __future__ import division
@@ -126,8 +122,6 @@ for i in range(15):
     print[t[0] for t in mdl.show_topic(i, 15)]
     print('-----')
 
-# print get_theta(tok_bow, mdl)
-
 # test model
 
 query = open('C:\\Users\\Ray\\Desktop\\TMProject\\test_article_crime.txt').read()
@@ -140,39 +134,6 @@ query = dictionary.doc2bow(query)
 mdl[query] # train model on new data
 mdl.print_topics(20,10)
 
-'''
-('topic', 0)
-[u'bjp', u'pakistan', u'leader', u'president', u'leaders', u'corruption', u'modi', u'political', u'assembly', u'elections']
------
-('topic', 1)
-[u'xa', u'game', u'games', u'team', u'season', u'players', u'play', u'back', u'offense', u'jets']
------
-('topic', 2)
-[u'cbi', u'murder', u'crime', u'mumbai', u'accused', u'branch', u'chargesheet', u'investigation', u'probe', u'evidence']
------
-('topic', 3)
-[u'report', u'companies', u'act', u'directors', u'financial', u'board', u'annual', u'section', u'crore', u'corporate']
------
-('topic', 4)
-[u'cricket', u'world', u'international', u'match', u'pakistan', u'ipl', u'fixing', u'military', u'war', u'meiyappan']
------
-('topic', 5)
-[u'film', u'cards', u'atm', u'me', u'card', u'how', u'because', u'cyber', u'show', u'don']
------
-('topic', 6)
-[u'city', u'crime', u'xa', u'family', u'old', u'told', u'man', u'back', u'off', u'york']
------
-('topic', 7)
-[u'bank', u'health', u'fraud', u'drug', u'money', u'million', u'medical', u'pay', u'drugs', u'business']
------
-('topic', 8)
-[u'corruption', u'public', u'political', u'must', u'power', u'system', u'need', u'water', u'society', u'how']
------
-('topic', 9)
-[u'arrested', u'crime', u'branch', u'cases', u'officer', u'accused', u'murder', u'allegedly', u'district', u'officials']
-'''
-
-# estimate document similarity in topic
 # KL divergence
 def get_theta(tok_bow, mdl):
    tmp = mdl.get_document_topics(tok_bow, minimum_probability=0)
