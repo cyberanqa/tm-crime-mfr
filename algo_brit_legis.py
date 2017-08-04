@@ -5,7 +5,6 @@ draft
 """
 import io, os, re
 import pandas as pd
-
 wd = 'C:\Users\Ray\Desktop\TMProject'
 os.chdir(wd)
 
@@ -61,7 +60,7 @@ def gen_ls_stoplist(input, n = 100):
             t_f_total[token] += 1
     nmax = sorted( t_f_total.items(), key = itemgetter(1), reverse = True)[:n]
     return [elem[0] for elem in nmax]
-sw = gen_ls_stoplist(token_text, 150)
+sw = gen_ls_stoplist(token_text, 100)
 
 # apply stopword list
 token_nostop = []
@@ -73,7 +72,7 @@ df['token_nostop'] = token_nostop
    
 ''' CRIME DICT '''
 
-cri_dic = io.open('C:\Users\Ray\Desktop\TMProject\crime_dic.txt', 'r', encoding = 'utf-8').read()
+cri_dic = io.open('C:\Users\Ray\Desktop\TMProject\crime_law_dic.txt', 'r', encoding = 'utf-8').read()
 cri_dic_clean = re.sub(r'[^a-zA-Z]',' ',cri_dic)
 cri_dic_clean = re.sub(r' +',' ', cri_dic_clean)
 cri_dic_clean = cri_dic_clean.rstrip()
@@ -92,21 +91,15 @@ df['crime'] = crime
 # delete empty strings
 cri = list(filter(None, crime))
 
-#  
+# to get every slice and join them into one variable
 var = cri
-
-for i in range(0, len(cri)):
-    var = []
-    for n in range(0, len(cri[i])):
-        var = var + cri[i][n]
-
 var = []
 for l in cri:
     var.append([item for sublist in l for item in sublist])
         
 var[0]
 flat_list = [item for sublist in var[0] for item in sublist]
-    
+
 ''' TOPIC MODELLING - LDA'''
 
 from __future__ import division
@@ -116,8 +109,6 @@ from gensim import corpora, models
 # distribution over topics
 dictionary = corpora.Dictionary(var)
 print(dictionary.num_docs)   
-print(dictionary.keys())    
-print(dictionary.values())
 
 tok_bow = [dictionary.doc2bow(tok) for tok in var]
 
@@ -134,3 +125,20 @@ for i in range(15):
     print('-----')
 
 mdl.print_topics(num_topics = 15, num_words = 10)
+
+# estimate document similarity in topic
+# KL divergence
+def get_theta(tok_bow, mdl):
+   tmp = mdl.get_document_topics(tok_bow, minimum_probability=0)
+   return [p[1] for p in tmp]
+
+def kl_div(p, q):
+   p = np.asarray(p, dtype=np.float)
+   q = np.asarray(q, dtype=np.float)
+   return np.sum(np.where(p != 0,(p-q) * np.log10(p / q), 0))
+
+# representation of topics in each fragment
+thetas = []
+for fragment in tok_bow:
+    texty = get_theta(fragment, mdl)
+    thetas.append(texty)
