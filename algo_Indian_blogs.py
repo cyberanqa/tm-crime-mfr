@@ -60,6 +60,7 @@ for fragment in token_text:
     token_nostop.append(no_sw)
 df['token_nostop'] = token_nostop
    
+
 ''' CRIME DICT '''
 import io
 cri_dic = io.open('C:\Users\Ray\Desktop\TMProject\crime_dic.txt', 'r', encoding = 'utf-8').read()
@@ -67,6 +68,8 @@ cri_dic_clean = re.sub(r'[^a-zA-Z]',' ',cri_dic)
 cri_dic_clean = re.sub(r' +',' ', cri_dic_clean)
 cri_dic_clean = cri_dic_clean.rstrip()
 token_cri_dic = tokenize(cri_dic_clean, True)
+
+# filter(r.match, list)
 
 # filter the texts by crime dictionary
 crime = []
@@ -81,14 +84,8 @@ df['crime'] = crime
 # delete empty strings
 cri = list(filter(None, crime))
 
-#  
+# to get every slice and join them into one variable
 var = cri
-
-for i in range(0, len(cri)):
-    var = []
-    for n in range(0, len(cri[i])):
-        var = var + cri[i][n]
-
 var = []
 for l in cri:
     var.append([item for sublist in l for item in sublist])
@@ -96,6 +93,7 @@ for l in cri:
 var[0]
 flat_list = [item for sublist in var[0] for item in sublist]
     
+
 ''' TOPIC MODELLING - LDA'''
 
 from __future__ import division
@@ -131,9 +129,10 @@ query = [w for w in query if w in vocab]
 
 query = dictionary.doc2bow(query)
 
-mdl[query] # train model on new data
+mdl[query] # test model on new data
 mdl.print_topics(20,10)
 
+# estimate document similarity in topic
 # KL divergence
 def get_theta(tok_bow, mdl):
    tmp = mdl.get_document_topics(tok_bow, minimum_probability=0)
@@ -144,12 +143,19 @@ def kl_div(p, q):
    q = np.asarray(q, dtype=np.float)
    return np.sum(np.where(p != 0,(p-q) * np.log10(p / q), 0))
 
+thetas = []
+for fragment in tok_bow:
+    texty = get_theta(fragment, mdl)
+    thetas.append(texty)
+
+'''
+# difference between topics: similarity through distance
 tok1 = tok_bow[1]
 tok2 = tok_bow[-100]
 tok3 = tok_bow[2]
-
-# difference between topics: how many times
+# measures distance between documents
 print kl_div(get_theta(tok1, mdl), get_theta(tok2, mdl))
 print kl_div(get_theta(tok1, mdl), get_theta(tok3, mdl))
-# probability distribution for each topic
+# topic distribution for each document
 print get_theta(tok1, mdl)
+'''
