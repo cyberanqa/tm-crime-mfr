@@ -71,7 +71,6 @@ for fragment in token_text:
     token_nostop.append(no_sw)
 df['token_nostop'] = token_nostop
    
-
 ''' CRIME DICT '''
 
 cri_dic = io.open('C:\Users\Ray\Desktop\TMProject\crime_dic.txt', 'r', encoding = 'utf-8').read()
@@ -108,7 +107,6 @@ for l in cri:
 var[0]
 flat_list = [item for sublist in var[0] for item in sublist]
     
-
 ''' TOPIC MODELLING - LDA'''
 
 from __future__ import division
@@ -124,34 +122,15 @@ print(dictionary.values())
 tok_bow = [dictionary.doc2bow(tok) for tok in var]
 
 # train the model
-mdl = models.LdaModel(tok_bow, id2word = dictionary, num_topics = 5, random_state = 1234)
+mdl = models.LdaModel(tok_bow, id2word = dictionary, num_topics = 15, random_state = 1234)
 
 # you can also run on multiple cores in your computer (distributed=False)
 # mdl = models.LdaModel(tok_bow, id2word=dictionary, num_topics=k, passes=25, update_every=0, alpha=None, eta=None, decay=0.5, distributed=False)
 
-for i in range(5):
+for i in range(15):
     print('topic', i)
     # list of (word, probability) for most probable words in topic
-    print[t[0] for t in mdl.show_topic(i, 5)]
+    print[t[0] for t in mdl.show_topic(i, 15)]
     print('-----')
 
-mdl.print_topics(num_topics = 5, num_words = 10)
-
-"""
-('topic', 0)
-[u'defendant', u'proceedings', u'evidence', u'warrant', u'contract']
------
-('topic', 1)
-[u'defendant', u'proceedings', u'criminal', u'warrant', u'hearing']
------
-('topic', 2)
-[u'defendant', u'party', u'criminal', u'evidence', u'hearing']
------
-('topic', 3)
-[u'defendant', u'proceedings', u'criminal', u'crown', u'evidence']
------
-('topic', 4)
-[u'defendant', u'crown', u'evidence', u'party', u'warrant']
-
-"""
-
+mdl.print_topics(num_topics = 15, num_words = 10)
