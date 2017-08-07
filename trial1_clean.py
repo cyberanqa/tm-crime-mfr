@@ -11,8 +11,8 @@ wd = 'c:/Users/Alonso/Desktop/TMProject'
 os.chdir(wd)
 
 import pandas as pd
-
-
+import numpy as np
+import seaborn as sns
 ###
 
 filepath = 'c:/Users/Alonso/Desktop/TMProject/COHA/'
@@ -53,7 +53,22 @@ for text in df['text']:
     text = text.rstrip()
     textClean.append(text)
 df['clean_text'] = textClean
-    
+
+# frequency table 
+## for genre only
+feq_tab = pd.DataFrame()
+feq_tab = pd.value_counts(df.genre).to_frame().reset_index()
+feq_tab_perc = feq_tab['genre']/feq_tab['genre'].sum()
+
+## genre by year
+feq_gen_year = pd.crosstab(df.year, df.genre)
+
+# with percentages
+feq_gen_year_perc = pd.crosstab(df.year, df.genre).apply(lambda r: r/r.sum(), axis=1)
+
+# distribution of genres per year
+sns.stripplot(x="genre", y="year", data=df, jitter=True) 
+  
 """
 - First try for topic analysis
 """
@@ -150,7 +165,7 @@ for text in multillist:
             
 df['cri'] = cri
       
-# 
+"""
 var = cri
 var = [].join(cri)
 
@@ -158,6 +173,7 @@ for i in range(0, len(cri)):
     var = []
     for n in range(0, len(cri[i])):
         var = var + cri[i][n]
+"""
 
 var = []
 for l in cri:
@@ -182,51 +198,103 @@ print(dictionary.dfs)
 
 slic_bow = [dictionary.doc2bow(slic) for slic in var]
 
-
 # train the model
-mdl = models.LdaModel(slic_bow, id2word = dictionary, num_topics = 5, random_state = 1234)
+mdl = models.LdaModel(slic_bow, id2word = dictionary, num_topics = 2, random_state = 1234, passes = 25)
 
 
 # explore the model
 # print topics as word distributions
-for i in range(5):
+for i in range(2):
     print('topic', i)
-    print([t[0] for t in mdl.show_topic(i, 10)])
+    print([t[0] for t in mdl.show_topic(i, 20)])
     print('-----')
 
+## estimate document similarity on topic
+# KL divergence
+def get_theta(doc_bow, mdl):  # topic distribution
+    tmp = mdl.get_document_topics(doc_bow, minimum_probability=0)
+    return [p[1] for p in tmp]
 
-"""
-vocab = dictionary.values()
-query = []
-for fragment in token_sliced:
-    tmp = [w for w in token_sliced if w in vocab]
-    query.append(tmp)
+def kl_div(p, q):
+    p = np.asarray(p, dtype=np.float)
+    q = np.asarray(q, dtype=np.float)
+    return np.sum(np.where(p != 0,(p-q) * np.log10(p / q), 0))
 
-query = [w for w in token_sliced if w in vocab] 
+thetas = []
+for fragment in slic_bow:
+    text = get_theta(fragment, mdl)
+    thetas.append(text)
 
+df['thetas'] = thetas
 
-print(query)
-query = dictionary.doc2bow(query)
-print(query)
-mdl[query]
-"""
+# variable for each topic
+theta1 = []
+for tmp in thetas:
+    theta1.append(tmp[0])
+df['theta1'] = theta1
+    
+theta2 = []
+for tmp in thetas:
+    theta2.append(tmp[1])
+df['theta2'] = theta2
+    
+theta3 = []
+for tmp in thetas:
+    theta3.append(tmp[2])
+df['theta3'] = theta3
+    
+theta4 = []
+for tmp in thetas:
+    theta4.append(tmp[3])
+df['theta4'] = theta4
+    
+theta5 = []
+for tmp in thetas:
+    theta5.append(tmp[4])
+df['theta5'] = theta5
+    
+# delete rows without crime on it
+df2 = df
 
+df2['theta1'].replace(0.5, np.nan, inplace=True)
+df2.dropna(subset=['theta1'], inplace=True)
 
+# distribution of genres per year in slices of crime
+sns.stripplot(x="genre", y="year", data=df2, jitter=True)
 
+# distribution of genres per theta
+sns.stripplot(x="genre", y="theta1", data=df2, jitter=True)
+sns.stripplot(x="genre", y="theta2", data=df2, jitter=True)
+sns.stripplot(x="genre", y="theta3", data=df2, jitter=True)
 
+# I should choose between this next plot and the later one with the blue circles
+sns.stripplot(x="theta1", y="year", data=df2, jitter=True)
+sns.stripplot(x="theta2", y="year", data=df2, jitter=True)
 
-        
+# frequency table
+feq_tab_cri = pd.DataFrame()
+feq_tab_cri = pd.value_counts(df2.genre).to_frame().reset_index()
+feq_cri = feq_tab_cri['genre']
+feq_tab['genre_cri'] = feq_cri
+cri_tab_perc = feq_tab_cri['genre']/feq_tab_cri['genre'].sum()
 
+## genre by year
+cri_gen_year = pd.crosstab(df2.year, df2.genre)
 
+# with percentages
+cri_gen_year_perc = pd.crosstab(df2.year, df2.genre).apply(lambda r: r/r.sum(), axis=1)
 
+# plot theta per year
+sns.jointplot(x="year", y="theta1", data=df2, kind="kde")
+sns.jointplot(x="year", y="theta2", data=df2, kind="kde")
+sns.jointplot(x="year", y="theta3", data=df2, kind="kde")
+sns.jointplot(x="year", y="theta4", data=df, kind="kde")
+sns.jointplot(x="year", y="theta5", data=df, kind="kde")
 
-
-
-
-
-
-
-
-
-
+# frequency distribution
+sns.regplot(x="year", y="theta1", data=df)
+sns.regplot(x="year", y="theta2", data=df)
+sns.regplot(x="year", y="theta3", data=df)
+sns.regplot(x="year", y="theta4", data=df)
+sns.regplot(x="year", y="theta5", data=df)
 
