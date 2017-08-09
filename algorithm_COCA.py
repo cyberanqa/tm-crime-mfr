@@ -184,6 +184,19 @@ import gensim
 lsi = gensim.models.lsimodel.LsiModel(slic_bow, id2word=dictionary, num_topics=5)
 lsi.print_topics()
 
+'''
+[(0,
+  u'0.099*"president" + 0.098*"against" + 0.098*"york" + 0.090*"season" + 0.089*"since" + 0.088*"qwq" + 0.086*"why" + 0.086*"killed" + 0.085*"crime" + 0.084*"team"'),
+ (1,
+  u'0.276*"season" + 0.192*"quarterback" + 0.192*"record" + 0.173*"offense" + 0.167*"defense" + 0.161*"team" + 0.133*"defensive" + 0.129*"players" + 0.124*"offensive" + -0.114*"gargano"'),
+ (2,
+  u'-0.362*"reilly" + -0.240*"qwq" + 0.146*"gargano" + -0.143*"morones" + 0.128*"officials" + 0.125*"york" + 0.124*"chulpayev" + 0.124*"federal" + 0.123*"company" + -0.101*"moriarty"'),
+ (3,
+  u'0.577*"reilly" + -0.328*"qwq" + 0.237*"morones" + -0.128*"moriarty" + 0.128*"border" + -0.099*"gibson" + 0.094*"animals" + 0.087*"begala" + 0.087*"rivera" + 0.075*"rights"'),
+ (4,
+  u'0.255*"qwq" + -0.170*"gayle" + -0.167*"king" + -0.131*"richard" + -0.126*"keteyian" + 0.123*"smith" + -0.118*"schlesinge" + 0.115*"war" + -0.110*"erica" + -0.108*"insurance"')]
+'''
+
 ## visualize words and percentages
 lex = lsi.show_topics(5, formatted=False)
 lexi = str(lex)
