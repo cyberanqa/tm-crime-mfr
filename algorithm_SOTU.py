@@ -207,6 +207,19 @@ import gensim
 lsi = gensim.models.lsimodel.LsiModel(slic_bow, id2word=dictionary, num_topics=5)
 lsi.print_topics()
 
+'''
+[(0,
+  u'0.222*"crime" + 0.163*"weapons" + 0.124*"community" + 0.109*"terrorists" + 0.104*"law" + 0.104*"peace" + 0.104*"which" + 0.104*"nuclear" + 0.102*"against" + 0.100*"iraq"'),
+ (1,
+  u'-0.271*"crime" + 0.224*"iraq" + 0.206*"weapons" + 0.156*"terrorists" + -0.140*"community" + 0.138*"terror" + 0.136*"nations" + 0.125*"iraqi" + 0.123*"regime" + -0.108*"police"'),
+ (2,
+  u'0.303*"weapons" + 0.151*"iraq" + 0.146*"inspectors" + 0.128*"saddam" + 0.122*"hussein" + 0.113*"nuclear" + -0.112*"fight" + 0.110*"crime" + 0.093*"money" + -0.089*"which"'),
+ (3,
+  u'0.195*"gun" + 0.153*"thank" + 0.144*"challenge" + -0.140*"something" + -0.119*"crime" + 0.112*"state" + -0.110*"secure" + -0.107*"system" + 0.107*"weapons" + 0.106*"parents"'),
+ (4,
+  u'-0.310*"challenge" + 0.211*"gun" + 0.165*"which" + -0.148*"peace" + -0.137*"federal" + -0.112*"helping" + -0.112*"crime" + -0.110*"proud" + -0.098*"percent" + -0.086*"schools"')]
+ '''
+
 ## visualize words and percentages
 lex = lsi.show_topics(5, formatted=False)
 lexi = str(lex)
@@ -237,16 +250,3 @@ lsidf['percent'] = lex_num
 lsidf['words'] = lexi_word
 # into csv
 lsidf.to_csv('lsi.csv')
-
-'''
-[(0,
-  u'0.222*"crime" + 0.163*"weapons" + 0.124*"community" + 0.109*"terrorists" + 0.104*"law" + 0.104*"peace" + 0.104*"which" + 0.104*"nuclear" + 0.102*"against" + 0.100*"iraq"'),
- (1,
-  u'-0.271*"crime" + 0.224*"iraq" + 0.206*"weapons" + 0.156*"terrorists" + -0.140*"community" + 0.138*"terror" + 0.136*"nations" + 0.125*"iraqi" + 0.123*"regime" + -0.108*"police"'),
- (2,
-  u'0.303*"weapons" + 0.151*"iraq" + 0.146*"inspectors" + 0.128*"saddam" + 0.122*"hussein" + 0.113*"nuclear" + -0.112*"fight" + 0.110*"crime" + 0.093*"money" + -0.089*"which"'),
- (3,
-  u'0.195*"gun" + 0.153*"thank" + 0.144*"challenge" + -0.140*"something" + -0.119*"crime" + 0.112*"state" + -0.110*"secure" + -0.107*"system" + 0.107*"weapons" + 0.106*"parents"'),
- (4,
-  u'-0.310*"challenge" + 0.211*"gun" + 0.165*"which" + -0.148*"peace" + -0.137*"federal" + -0.112*"helping" + -0.112*"crime" + -0.110*"proud" + -0.098*"percent" + -0.086*"schools"')]
- '''
