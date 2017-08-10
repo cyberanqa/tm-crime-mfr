@@ -30,8 +30,8 @@ from gensim import corpora, models
 dictionary = corpora.Dictionary(var)
 tok_bow = [dictionary.doc2bow(tok) for tok in var]
 
-# term-document matrix decomposition, vector representation of document
 lsi = gensim.models.lsimodel.LsiModel(tok_bow, id2word=dictionary, num_topics=5)
+
 # print the most contributing words for each topic
 lsi.print_topics()
 lsi.show_topics(formatted=False)
