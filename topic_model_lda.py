@@ -47,9 +47,6 @@ print topics_terms
 
 # for future use
 mdl.save('topic.model')
-# reload
-from gensim.models import LdaModel
-loading = LdaModel.load('topic.model')
 
 ## Visualization
 
